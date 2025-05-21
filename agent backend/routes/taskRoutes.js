@@ -5,6 +5,6 @@ const upload = require("../middlewares/uploadMiddleware");
 const router = express.Router();
 
 router.post("/upload", auth, upload.single("file"), uploadCSV);
-router.get("/all", auth, getAgentTasks);
+router.get("/all",auth, getAgentTasks);
 
 module.exports = router;

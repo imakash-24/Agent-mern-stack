@@ -1,13 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-  agentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Agent",
-  },
-  firstName: String,
-  phone: String,
-  notes: String,
+  title: String,
+  description: String,
+  email: String,
+  agentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Agent' }
 });
 
-module.exports = mongoose.model("Task", taskSchema);
+module.exports = mongoose.model('Task', taskSchema);
+
+

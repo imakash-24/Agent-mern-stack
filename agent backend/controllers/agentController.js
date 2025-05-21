@@ -14,7 +14,3 @@ exports.getAgents = async (req, res) => {
   res.json(agents);
 };
 
-module.exports = {
-  addAgent,
-  getAgents,
-};

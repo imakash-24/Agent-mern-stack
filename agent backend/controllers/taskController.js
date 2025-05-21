@@ -4,6 +4,7 @@ const csv = require("csv-parser");
 const XLSX = require("xlsx");
 const fs = require("fs");
 
+// Upload and process CSV/XLSX files
 exports.uploadCSV = async (req, res) => {
   const file = req.file;
   if (!file) return res.status(400).json({ message: "No file uploaded" });
@@ -23,35 +24,63 @@ exports.uploadCSV = async (req, res) => {
   }
 };
 
+// Distribute tasks by assigning agentId via email matching
 async function distribute(data, res) {
-  const agents = await Agent.find();
-  if (agents.length === 0) return res.status(400).json({ message: "No agents found" });
+  try {
+    const agents = await Agent.find();
+    if (agents.length === 0)
+      return res.status(404).json({ message: "No agents found" });
 
-  const total = data.length;
-  const chunkSize = Math.floor(total / agents.length);
-  let index = 0;
+    for (const item of data) {
+      const { title, description, email } = item;
 
-  for (let i = 0; i < agents.length; i++) {
-    const extra = i < total % agents.length ? 1 : 0;
-    const items = data.slice(index, index + chunkSize + extra);
-    index += chunkSize + extra;
+      // Find agent by email
+      const agent = await Agent.findOne({ email });
+      console.log(email);
 
-    for (const item of items) {
-      const { FirstName, Phone, Notes } = item;
       const task = new Task({
-        agentId: agents[i]._id,
-        firstName: FirstName,
-        phone: Phone,
-        notes: Notes,
+        title,
+        description,
+        email,
+        agentId: agent ? agent._id : null, // assign agentId if found
       });
+
       await task.save();
     }
-  }
 
-  res.json({ message: "Tasks distributed successfully" });
+    res.json({ message: "Tasks distributed successfully" });
+  } catch (err) {
+    console.error("Distribution Error:", err);
+    res.status(500).json({ message: "Server error during distribution" });
+  }
 }
 
+// Fetch tasks with agent name populated
+// exports.getAgentTasks = async (req, res) => {
+//   try {
+//     const tasks = await Task.find().populate("agentId", "name");
+
+//     const formattedTasks = tasks.map(task => ({
+//       title: task.title,
+//       description: task.description,
+//       email: task.email,
+//       agentName: task.agentId?.name || "Unassigned"
+//     }));
+
+//     res.json(formattedTasks);
+//   } catch (err) {
+//     console.error("Fetch Tasks Error:", err);
+//     res.status(500).json({ message: "Server error while fetching tasks" });
+//   }
+// };
+
 exports.getAgentTasks = async (req, res) => {
-  const tasks = await Task.find().populate("agentId", "name email");
-  res.json(tasks);
+  try {
+    const tasks = await Task.find().populate("agentId", "name");
+    res.json(tasks);
+  } catch (err) {
+    console.error("Fetch Tasks Error:", err);
+    res.status(500).json({ message: "Server error while fetching tasks" });
+  }
 };
+
