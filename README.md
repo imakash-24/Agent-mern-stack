@@ -9,17 +9,8 @@ A full-stack web application that allows admins to manage agents and assign task
 ✅ Admin login system  
 ✅ Add, edit, and delete agents  
 ✅ Upload tasks via CSV and assign to agents  
-✅ View assigned tasks in a responsive dashboard  
-✅ Sidebar with mobile hamburger toggle  
-✅ Styled with Bootstrap and custom CSS  
-✅ Full responsive design (mobile/tablet/desktop)
-
----
-
-## 🖼️ Screenshots
-
-### 🖥️ Dashboard View
-![Dashboard](./screenshots/dashboard.png)
+✅ View assigned tasks in a dashboard   
+✅ Styled with Bootstrap and custom CSS
 
 ---
 
